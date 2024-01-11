@@ -6,6 +6,7 @@ This collection houses a variety of useful scripts to simplify and enhance my wo
 - [Scripts Overview](#scripts-overview)
   - [Arch Linux Installation](#arch-linux-installation)
   - [DroidCam Launcher](#droidcam-launcher)
+  - [macOS Developer Environment Setup](#macos-developer-environment-setup)
   - [Ubuntu Developer Environment Setup](#ubuntu-developer-environment-setup)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
@@ -25,6 +26,10 @@ This repository is a curated collection of scripts designed to make my life easi
 ### DroidCam Launcher
 
 - Checks and configures the environment for DroidCam. It initializes the app on a connected Android device and uses `droidcam-cli` to use it.
+
+### macOS Developer Environment Setup
+
+- Automates the setup of a macOS development environment. It checks and installs Command Line Tools for Xcode, Homebrew, Git, and Oh My Zsh. Additionally, it installs essential apps like Google Chrome, Kitty, Docker, and Visual Studio Code using Homebrew.
 
 ### Ubuntu Developer Environment Setup
 

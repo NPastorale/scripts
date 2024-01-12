@@ -43,7 +43,7 @@ if [ -d ~/.oh-my-zsh ]; then
     echo "Oh My Zsh is already installed"
 else
     echo "Oh My Zsh not found. Installing..."
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
 # TODO: Get omz themes and plugins

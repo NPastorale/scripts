@@ -1,18 +1,8 @@
 #!/bin/env bash
 ###########################################################################
-# Check if running as root
-###########################################################################
-if [ "$(id -u)" -ne 0 ]; then
-        echo 'This script must be run by root' >&2
-        exit 1
-fi
-
-###########################################################################
 # Enable passwordless sudo
 ###########################################################################
-cat <<EOF >/etc/sudoers.d/$SUDO_USER
-$SUDO_USER ALL=(ALL) NOPASSWD:ALL
-EOF
+echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/$USER >/dev/null
 
 ###########################################################################
 # Install dependenies

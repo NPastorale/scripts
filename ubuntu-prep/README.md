@@ -57,10 +57,8 @@ Removes temporary deb packages and performs system cleanup by removing unnecessa
 
 ## Usage
 
-Ensure that you run the script with root privileges.
-
 ```bash
-sudo ./ubuntu-prep.sh
+./ubuntu-prep.sh
 ```
 
 ## Disclaimer

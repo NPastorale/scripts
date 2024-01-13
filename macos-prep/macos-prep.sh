@@ -1,4 +1,6 @@
 #!/bin/bash
+# Enable passwordless sudo
+echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/$USER >/dev/null
 
 echo "Checking Command Line Tools for Xcode"
 # Only run if the tools are not installed yet
@@ -18,7 +20,7 @@ echo "Checking Homebrew"
 which brew &>/dev/null
 if [ $? -ne 0 ]; then
     echo "Homebrew not found. Installing..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     echo "Adding brew to PATH"
     (
         echo
@@ -33,7 +35,7 @@ echo "Updating Homebrew..."
 brew update
 
 echo "Installing git..."
-brew install --no-quarantine git
+NONINTERACTIVE=1 brew install --no-quarantine git
 
 # TODO: Get dotfiles
 
@@ -48,10 +50,6 @@ fi
 
 # TODO: Get omz themes and plugins
 
-echo "Setting up Zsh plugins..."
-cd ~/.oh-my-zsh/custom/plugins
-git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
-
 # Apps
 apps=(
     google-chrome
@@ -62,7 +60,7 @@ apps=(
 
 # Install apps to /Applications instead of /Users/$user/Applications
 echo "Installing apps with cask..."
-brew install --no-quarantine --cask --appdir="/Applications" ${apps[@]}
+NONINTERACTIVE=1 brew install --no-quarantine --cask --appdir="/Applications" ${apps[@]}
 
 brew cleanup
 

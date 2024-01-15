@@ -16,7 +16,7 @@ red='\033[0;31m'
 nc='\033[0m' # No Color
 
 echo -e "${blue}=============================================================="
-echo -e "${blue}==========Welcome to the Nahue Arch Installer edition========="
+echo -e "${blue}============= Welcome to the Nahue Arch Installer ============"
 echo -e "${blue}==============================================================${nc}"
 
 # Unmount partitions and close LUKS container, useful when rerunning the script

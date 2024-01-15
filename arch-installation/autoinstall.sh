@@ -24,12 +24,10 @@ umount -R /mnt &>/dev/null
 cryptsetup close home-$username &>/dev/null
 
 # Check internet connectivity
-if [[ $(ping -c 1 google.com) ]]; then
-	true
-else
+curl -ILs --fail --output /dev/null https://www.google.com || {
 	echo "${red}No internet connection. Exiting..."
-	exit
-fi
+	exit 1
+}
 
 # Eliminate Arch Linuux entries in EFI
 for i in $(efibootmgr | cut -d" " -f1 | cut -c5-8); do

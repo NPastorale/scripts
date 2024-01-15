@@ -317,9 +317,7 @@ cat <<-EOF >/mnt/etc/pam_cryptsetup.sh
 	PARTITION="${disk}p3"
 	NAME="home-\$CRYPT_USER"
 
-	if [[ "\$PAM_USER" == "\$CRYPT_USER" && ! -e "/dev/mapper/\$NAME" ]]; then
-		/usr/bin/cryptsetup open "\$PARTITION" "\$NAME"
-	fi
+	[[ "\$PAM_USER" == "\$CRYPT_USER" && ! -e "/dev/mapper/\$NAME" ]] && /usr/bin/cryptsetup open "\$PARTITION" "\$NAME"
 EOF
 
 cat <<-EOF >/mnt/etc/systemd/system/home-$username.mount

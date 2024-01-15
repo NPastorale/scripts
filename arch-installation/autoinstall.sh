@@ -43,12 +43,10 @@ echo -n "Confirm password: "
 IFS= read -rs password2
 echo
 
-if [[ "$password" == "$password2" ]]; then
-	true
-else
+[[ "$password" == "$password2" ]] || {
 	echo "Passwords do not match. Exiting..."
-	exit
-fi
+	exit 1
+}
 
 # Enable NTP
 echo -e "${green}Enabling NTP${nc}"

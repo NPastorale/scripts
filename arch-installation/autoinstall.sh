@@ -217,6 +217,7 @@ cat <<-EOF >/mnt/home/$username/paru.sh
 		bspwm \
 		btop \
 		docker \
+		droidcam \
 		efibootmgr \
 		feh \
 		git \
@@ -229,6 +230,7 @@ cat <<-EOF >/mnt/home/$username/paru.sh
 		iwd \
 		keepassxc \
 		keychain \
+		kind-bin \
 		kitty \
 		leafpad \
 		light-locker \
@@ -237,6 +239,7 @@ cat <<-EOF >/mnt/home/$username/paru.sh
 		man-db \
 		mpv \
 		ncdu \
+		oh-my-zsh-git \
 		openssh \
 		picom \
 		playerctl \
@@ -245,6 +248,7 @@ cat <<-EOF >/mnt/home/$username/paru.sh
 		pulseaudio-alsa \
 		pulseaudio-bluetooth \
 		rofi \
+		slack-desktop \
 		sof-firmware \
 		steam \
 		stow \

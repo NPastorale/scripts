@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-disk="/dev/nvme0n1"
-hostname='XPS'
-domain='nahue.ar'
-username='nahue'
-name='Nahuel'
+readonly disk="/dev/nvme0n1"
+readonly hostname='XPS'
+readonly domain='nahue.ar'
+readonly username='nahue'
+readonly name='Nahuel'
 
 # ===================================================
 # ==Do not change variables from this point onwards==

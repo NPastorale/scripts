@@ -1,0 +1,59 @@
+# Run with `ansible-playbook 1_raspberry_prep.yaml --ask-pass`
+- name: Initial setup
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Create the 'nahue' user
+      user:
+        name: nahue
+        state: present
+        createhome: true
+        shell: /bin/bash
+
+    - name: Allow 'nahue' to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        line: "nahue ALL=(ALL) NOPASSWD: ALL"
+        validate: "visudo -cf %s"
+
+    - name: Set authorized key for nahue user
+      authorized_key:
+        user: nahue
+        state: present
+        key: "{{ lookup('file', '../ansible.pub') }}"
+
+    - name: Assign hostnames
+      hostname:
+        name: "{{ inventory_hostname_short }}"
+        use: systemd
+      notify: Reboot
+
+    - name: Add hostname to hosts file
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.0\.1'
+        line: 127.0.0.1 localhost {{ inventory_hostname_short }}
+
+    - name: Turn off status and activity lights
+      blockinfile:
+        path: /boot/config.txt
+        block: |
+          [pi4]
+          # Disable the PWR LED
+          dtparam=pwr_led_trigger=none
+          dtparam=pwr_led_activelow=off
+          # Disable the Activity LED
+          dtparam=act_led_trigger=none
+          dtparam=act_led_activelow=off
+      notify: Reboot
+
+    - name: Update repositories cache and dist-upgrade
+      apt:
+        upgrade: dist
+        update_cache: true
+      notify: Reboot
+
+  handlers:
+    - name: Reboot
+      reboot:

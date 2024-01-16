@@ -8,6 +8,8 @@ This collection houses a variety of useful scripts to simplify and enhance my wo
   - [DroidCam Launcher](#droidcam-launcher)
   - [macOS Developer Environment Setup](#macos-developer-environment-setup)
   - [Ubuntu Developer Environment Setup](#ubuntu-developer-environment-setup)
+- [Ansible Playbooks](#ansible-playbooks)
+  - [Network UPS Tools](#network-ups-tools)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -34,6 +36,14 @@ This repository is a curated collection of scripts designed to make my life easi
 ### Ubuntu Developer Environment Setup
 
 - Streamline Debian-based system setup. This script automates installation of key development tools, enabling passwordless sudo, and configuring essential packages.
+
+## Ansible Playbooks
+
+A collection of playbooks catering to different needs
+
+### Network UPS Tools
+
+- Automates the initial setup for a Raspberry Pi. Focuses on setting up Network UPS Tools (NUT) for monitoring connected devices. It installs NUT packages, gathers UPS information, configures global and device-specific UPS settings, and sets up monitoring and network configurations.
 
 ## Getting Started
 

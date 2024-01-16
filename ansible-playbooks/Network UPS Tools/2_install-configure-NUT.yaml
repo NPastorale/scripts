@@ -1,0 +1,86 @@
+- hosts: all
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Install NUT packages
+      apt:
+        name:
+          - nut
+          - nut-server
+          - nut-client
+        state: present
+  tasks:
+    - name: Gather UPS information
+      # This will only work for one UPS and it will be named "apc"
+      shell: nut-scanner 2>/dev/null | grep -A 50 '\[' | awk '/^\[nut/ { print "[apc]"; next; }; { print; }' -
+      register: ups_config
+
+    - name: Set up global UPS configuration
+      lineinfile:
+        path: /etc/nut/ups.conf
+        backup: true
+        line: "{{ item }}"
+      loop:
+        - "pollinterval = 1"
+        - "maxretry = 3"
+      notify: Reload NUT
+
+    - name: Set up device UPS configuration
+      blockinfile:
+        path: /etc/nut/ups.conf
+        block: "{{ ups_config.stdout }}"
+      notify: Reload NUT
+
+    - name: Set up monitoring configuration
+      lineinfile:
+        path: /etc/nut/upsmon.conf
+        backup: true
+        # Change the password for a new one
+        line: "MONITOR apc@localhost 1 admin uE1vwaEy2vaH7t9Y master"
+      notify: Reload NUT
+
+    - name: Set up upsd configuration
+      lineinfile:
+        path: /etc/nut/upsd.conf
+        backup: true
+        line: "LISTEN 0.0.0.0 3493"
+      notify: Reload NUT
+
+    - name: Set up upsd users
+      blockinfile:
+        path: /etc/nut/upsd.users
+        block: |
+          [monuser]
+            password = uE1vwaEy2vaH7t9Y
+            admin master
+      notify: Reload NUT
+
+    - name: Set up NUT configuration
+      lineinfile:
+        path: /etc/nut/nut.conf
+        backup: true
+        line: "MODE=netserver"
+      notify: Reload NUT
+
+  handlers:
+    - name: Restart nut-server
+      service: name=nut-server state=restarted
+      listen: "Reload NUT"
+
+    - name: Restart nut-client
+      service: name=nut-client state=restarted
+      listen: "Reload NUT"
+
+    - name: Restart nut-monitor
+      service: name=nut-monitor state=restarted
+      listen: "Reload NUT"
+
+    - name: Stop upsdrv
+      command: upsdrvctl stop
+      ignore_errors: yes
+      listen: "Reload NUT"
+
+    - name: Start upsdrv
+      command: upsdrvctl start
+      listen: "Reload NUT"

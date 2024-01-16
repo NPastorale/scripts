@@ -1,0 +1,2 @@
+[master]
+ups.nahue.ar ansible_user=nahue

@@ -1,0 +1,134 @@
+- hosts: all
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Enable container features
+      replace:
+        path: /boot/cmdline.txt
+        regexp: '^([\w](?!.*\b{{ item }}\b).*)$'
+        replace: '\1 {{ item }}'
+      loop:
+        - "cgroup_enable=cpuset"
+        - "cgroup_memory=1"
+        - "cgroup_enable=memory"
+      notify: Reboot
+
+  tasks:
+    - name: Create K8s module dependency file
+      blockinfile:
+        path: /etc/modules-load.d/k8s.conf
+        create: true
+        block: |
+          br_netfilter
+      notify: Reload sysctl
+
+    - name: Create K8s sysctl config file
+      blockinfile:
+        path: /etc/sysctl.d/k8s.conf
+        create: true
+        block: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+          net.ipv4.ip_forward = 1
+      notify: Reload sysctl
+
+    - name: Create containderd module dependency file
+      blockinfile:
+        path: /etc/modules-load.d/containerd.conf
+        create: true
+        block: |
+          overlay
+          br_netfilter
+      notify: Reload sysctl
+
+    - name: Create containderd sysctl config file
+      blockinfile:
+        path: /etc/sysctl.d/99-kubernetes-cri.conf
+        create: true
+        block: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+      notify: Reload sysctl
+
+    - name: Install dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - nfs-common
+        state: present
+
+    - name: Add Docker apt-key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+        keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        filename: docker
+        state: present
+        update_cache: true
+
+    - name: Add Kubernetes apt-key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+        keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+
+    - name: Add Kubernetes repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+        filename: kubernetes
+        state: present
+        update_cache: true
+
+    - name: Install containerd, kubeadm and kubelet
+      apt:
+        name:
+          - containerd.io
+          - kubeadm
+          - kubelet
+        state: latest
+
+    - name: Prevent kubeadm, kubelet and kubectl from being upgraded
+      dpkg_selections:
+        name: "{{ item }}"
+        selection: hold
+      with_items:
+        - kubeadm
+        - kubelet
+        - kubectl
+
+    - name: Create containerd directory
+      file:
+        path: /etc/containerd
+        state: directory
+
+    - name: Get default config from containerd
+      command: containerd config default
+      changed_when: false
+      register: containerd_config_default
+
+    - name: Write containerd config to config.toml
+      copy:
+        dest: /etc/containerd/config.toml
+        content: "{{ containerd_config_default.stdout }}"
+      notify: Restart containerd service
+
+  handlers:
+    - name: Reload sysctl
+      command: sysctl --system
+
+    - name: Restart containerd service
+      service:
+        name: containerd
+        state: restarted
+
+    - name: Reboot
+      reboot:

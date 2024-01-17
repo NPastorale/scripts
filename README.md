@@ -10,6 +10,7 @@ This collection houses a variety of useful scripts to simplify and enhance my wo
   - [Ubuntu Developer Environment Setup](#ubuntu-developer-environment-setup)
 - [Ansible Playbooks](#ansible-playbooks)
   - [Network UPS Tools](#network-ups-tools)
+  - [Raspberry Pi Kubernetes Cluster](#raspberry-pi-kubernetes-cluster)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -44,6 +45,10 @@ A collection of playbooks catering to different needs
 ### Network UPS Tools
 
 - Automates the initial setup for a Raspberry Pi. Focuses on setting up Network UPS Tools (NUT) for monitoring connected devices. It installs NUT packages, gathers UPS information, configures global and device-specific UPS settings, and sets up monitoring and network configurations.
+
+### Raspberry Pi Kubernetes Cluster
+
+- Automates the setup of a Kubernetes cluster running on several Raspberry Pis using `kubeadm` and resulting in a fully functional cluster. In my infrastructure, the necessity for this playbook has been superseded by [Talos](https://www.talos.dev/)
 
 ## Getting Started
 

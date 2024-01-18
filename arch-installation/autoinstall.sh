@@ -218,6 +218,7 @@ cat <<-EOF >/mnt/home/$username/paru.sh
 		btop \
 		docker \
 		droidcam \
+		dua-cli \
 		efibootmgr \
 		feh \
 		git \

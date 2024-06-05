@@ -28,3 +28,8 @@ sleep 1.5
 
 # Connect to computer using droidcam-cli over ADB on port 4747
 droidcam-cli adb 4747
+
+# Force-stop DroidCamX and leave the screen off
+adb shell am force-stop com.dev47apps.droidcamx
+adb shell input keyevent KEYCODE_HOME
+adb shell input keyevent KEYCODE_SLEEP

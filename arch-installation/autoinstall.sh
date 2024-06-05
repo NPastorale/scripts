@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Define constants
 readonly disk="/dev/nvme0n1"
 readonly hostname='XPS'
 readonly domain='nahue.ar'
@@ -10,11 +11,13 @@ readonly name='Nahuel'
 # ==Do not change variables from this point onwards==
 # ===================================================
 
+# Define text colors
 blue='\033[0;34m'
 green='\033[0;32m'
 red='\033[0;31m'
 nc='\033[0m' # No Color
 
+# Display welcome message
 echo -e "${blue}=============================================================="
 echo -e "${blue}============= Welcome to the Nahue Arch Installer ============"
 echo -e "${blue}==============================================================${nc}"
@@ -29,7 +32,7 @@ curl -ILs --fail --output /dev/null https://www.google.com || {
 	exit 1
 }
 
-# Eliminate Arch Linuux entries in EFI
+# Eliminate Arch Linux entries in EFI
 for i in $(efibootmgr | cut -d" " -f1 | cut -c5-8); do
 	efibootmgr -Bb $i
 done &>/dev/null
@@ -43,6 +46,7 @@ echo -n "Confirm password: "
 IFS= read -rs password2
 echo
 
+# Check if passwords match
 [[ "$password" == "$password2" ]] || {
 	echo "Passwords do not match. Exiting..."
 	exit 1
@@ -122,7 +126,7 @@ arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
 # Set the Hardware Clock to the current System Time
 arch-chroot /mnt hwclock --systohc
 
-# Set the hostmane
+# Set the hostname
 echo $hostname >/mnt/etc/hostname
 
 # Create the hosts file and configure it with the variables defined at the start
@@ -132,7 +136,7 @@ cat <<-EOF >/mnt/etc/hosts
 	127.0.1.1  $hostname.$domain  $hostname
 EOF
 
-# Configure sytemd-networkd wired network
+# Configure systemd-networkd wired network
 cat <<-EOF >/mnt/etc/systemd/network/99-wired-wildcard.network
 	[Match]
 	Type=ether
@@ -145,7 +149,7 @@ cat <<-EOF >/mnt/etc/systemd/network/99-wired-wildcard.network
 	RouteMetric=10
 EOF
 
-# Configure sytemd-networkd wireless network
+# Configure systemd-networkd wireless network
 cat <<-EOF >/mnt/etc/systemd/network/99-wireless-wildcard.network
 	[Match]
 	Type=wlan
@@ -170,7 +174,7 @@ useradd -R /mnt -m -G audio,video $username
 # Change ownership of the home directory to the created user
 arch-chroot /mnt chown -R $username:$username /home/$username
 
-# Sets the password for the created user
+# Set the password for the created user
 echo $username:$password | chpasswd -R /mnt
 
 # Set a skeleton home
@@ -285,7 +289,7 @@ rm /mnt/home/$username/paru.sh
 rm -rf /mnt/home/$username/paru-bin
 rm -rf /mnt/home/$username/paru-bin.tar.gz
 
-# Change the DPI to 192. TEMPORARY while I find a dynamyc solution
+# Change the DPI to 192. TEMPORARY while I find a dynamic solution
 cat <<-EOF >/mnt/home/$username/.Xresources
 	Xft.dpi: 192
 EOF
@@ -301,7 +305,7 @@ cat <<-EOF >/mnt/etc/sudoers.d/$username
 	$username ALL=(ALL) ALL
 EOF
 
-#  Configure lightdm
+# Configure lightdm
 sed -i "/^#greeter-session=/c\greeter-session=lightdm-mini-greeter" /mnt/etc/lightdm/lightdm.conf
 sed -i "/^#user-session=/c\user-session=bspwm" /mnt/etc/lightdm/lightdm.conf
 sed -i "/^user = CHANGE_ME/c\user = ${username}" /mnt/etc/lightdm/lightdm-mini-greeter.conf
@@ -345,7 +349,7 @@ cat <<-EOF >/mnt/etc/X11/xorg.conf.d/30-touchpad.conf
 		Option "Tapping" "on"
 		Option "NaturalScrolling" "true"
 		Option "AccelSpeed" "0.5"
-		Driver "libinput
+		Driver "libinput"
 	EndSection
 EOF
 

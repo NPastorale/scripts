@@ -29,7 +29,21 @@ sleep 1.5
 # Connect to computer using droidcam-cli over ADB on port 4747
 droidcam-cli adb 4747
 
-# Force-stop DroidCamX and leave the screen off
+# Force-stop DroidCamX
 adb shell am force-stop com.dev47apps.droidcamx
+
+# Wait for DroidCamX to stop
+sleep 0.5
+
+# Remove activity from recent apps
+adb shell input keyevent KEYCODE_APP_SWITCH
+adb shell input keyevent KEYCODE_TAB
+adb shell input keyevent DEL
+adb shell input keyevent DEL
+adb shell input keyevent DEL
+adb shell input keyevent DEL
+adb shell input keyevent DEL
+
+# Leave the screen off
 adb shell input keyevent KEYCODE_HOME
 adb shell input keyevent KEYCODE_SLEEP

@@ -18,19 +18,19 @@ fi
 adb shell input keyevent KEYCODE_HOME
 
 # Force-stop DroidCamX
-adb shell am force-stop com.dev47apps.droidcamx
+adb shell am force-stop com.dev47apps.obsdroidcam
 
 # Start DroidCamX
-adb shell am start -n com.dev47apps.droidcamx/com.dev47apps.droidcamx.DroidCamX -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
+adb shell am start -n com.dev47apps.obsdroidcam/com.dev47apps.obsdroidcam.MainActivity -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
 
 # Wait for initialization
-sleep 1.5
+sleep 1.8
 
 # Connect to computer using droidcam-cli over ADB on port 4747
 droidcam-cli adb 4747
 
 # Force-stop DroidCamX
-adb shell am force-stop com.dev47apps.droidcamx
+adb shell am force-stop com.dev47apps.obsdroidcam
 
 # Wait for DroidCamX to stop
 sleep 0.5

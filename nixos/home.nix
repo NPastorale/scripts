@@ -28,7 +28,8 @@
     wlogout # logout menu
 
     # Fonts
-    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
     font-awesome
 
     # GUI Apps
@@ -90,10 +91,9 @@
         "$mod, right, movefocus, r"
         "$mod, up, movefocus, u"
         "$mod, down, movefocus, d"
-      ];
-
-      # Workspaces
-      bind = builtins.concatLists (builtins.genList (
+      ] ++
+        # Workspaces
+        builtins.concatLists (builtins.genList (
         x: let
           ws = let
             c = (x + 1) / 10;

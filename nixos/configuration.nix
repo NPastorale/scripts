@@ -12,7 +12,7 @@
   networking.hostId = "c0defeca"; # Required by ZFS. Use `head -c 4 /dev/urandom | od -A none -t x4` to generate a real one if needed, but this works.
 
   # Kernel setup
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   # Hardware configuration
   hardware.cpu.intel.updateMicrocode = true;
@@ -134,7 +134,7 @@
     bluez
     bluez-tools
     btop
-    dua-cli
+    dua
     efibootmgr
     feh
     git

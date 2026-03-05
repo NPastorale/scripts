@@ -68,7 +68,24 @@
   # ZFS Auto-Unlock at Login using PAM Exec
   # We read the password from PAM and pass it to zfs load-key.
   # The dataset is zroot/home.
+  # We apply this to both 'login' (TTY) and 'greetd' (tuigreet) to ensure
+  # the home directory is unlocked regardless of how the user logs in.
   security.pam.services.login.text = pkgs.lib.mkDefault (pkgs.lib.mkAfter ''
+    auth optional pam_exec.so expose_authtok ${pkgs.writeShellScript "zfs-unlock" ''
+      DATASET="zroot/home"
+      # Only process for the user "nahue"
+      if [ "$PAM_USER" = "nahue" ]; then
+        STATUS=$(zfs get -H -o value keystatus $DATASET)
+        if [ "$STATUS" = "unavailable" ]; then
+          # Read auth token from expose_authtok pipeline and pipe to zfs load-key
+          cat | zfs load-key $DATASET
+          zfs mount $DATASET || true
+        fi
+      fi
+    ''}
+  '');
+
+  security.pam.services.greetd.text = pkgs.lib.mkDefault (pkgs.lib.mkAfter ''
     auth optional pam_exec.so expose_authtok ${pkgs.writeShellScript "zfs-unlock" ''
       DATASET="zroot/home"
       # Only process for the user "nahue"
